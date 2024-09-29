@@ -20,31 +20,31 @@ function Sidebar() {
       name: "Data Mapping",
       icon: DATA_MAPPING_ICON,
       isActive: true,
-      link: "/dashboard/data-mapping",
+      link: "",
     },
     {
       name: "Governance Document",
       icon: GOVERNANCE_DOCUMENT_ICON,
       isActive: false,
-      link: "/dashboard/governance-document",
+      link: "",
     },
     {
       name: "Data Processors",
       icon: DATA_PROCESSORS_ICON,
       isActive: false,
-      link: "/dashboard/data-processors",
+      link: "",
     },
     {
       name: "Subject Access Request",
       icon: SUBJECT_ACCESS_ICON,
       isActive: false,
-      link: "/dashboard/subject-access-request",
+      link: "",
     },
     {
       name: "Data Breach Register",
       icon: DATA_BREACH_REGISTER_ICON,
       isActive: false,
-      link: "/dashboard/data-breach-register",
+      link: "",
     },
   ];
 
@@ -65,7 +65,7 @@ function Sidebar() {
                 <Link href={item.link} passHref>
                   <span
                     className={`font-medium whitespace-nowrap xl:pt-1 cursor-pointer ${
-                      item.isActive ? "text-[#009540]" : "text-black"
+                      item.isActive ? "text-defaultGreen" : "text-black"
                     }`}
                   >
                     <p className="pt-0.5">{item.name}</p>

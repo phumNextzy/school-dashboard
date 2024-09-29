@@ -2,7 +2,7 @@
   "users": [
     {
       "id": 1727624491065,
-      "title": "test title",
+      "title": "User q",
       "department": "Employees",
       "description": "description",
       "dataSubjectTypes": [
@@ -12,7 +12,7 @@
     },
     {
       "id": 1727625991179,
-      "title": "title",
+      "title": "User 2",
       "description": "asdasd",
       "department": "IT/IS",
       "dataSubjectTypes": [
@@ -22,32 +22,38 @@
     },
     {
       "id": 1727629719502,
-      "title": "2",
+      "title": "User 3",
       "description": "",
-      "department": "CA",
+      "department": "Marketing",
       "dataSubjectTypes": [
-        "Subject2",
-        "Subject4"
+        "Students"
       ]
     },
     {
       "id": 1727629803276,
-      "title": "test",
+      "title": "User 4",
       "description": "2",
-      "department": "CA",
+      "department": "Admission",
       "dataSubjectTypes": [
-        "Subject3",
-        "Subject2"
+        "Faculty Staff"
       ]
     },
     {
       "id": 1727629962918,
-      "title": "test",
+      "title": "User 5",
       "description": "asdasd",
-      "department": "CA",
+      "department": "Human Resources",
       "dataSubjectTypes": [
-        "Subject2",
-        "Subject4"
+        "Faculty Staff"
+      ]
+    },
+    {
+      "id": 1727639071420,
+      "title": "User 6",
+      "description": "test",
+      "department": "IT/IS",
+      "dataSubjectTypes": [
+        "Faculty Staff"
       ]
     }
   ]

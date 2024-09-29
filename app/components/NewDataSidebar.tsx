@@ -139,7 +139,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   </h4>
                   <button
                     type="submit"
-                    className="text-white border py-2 px-3 bg-[#009540] border-[#FFFFFF] rounded-lg flex gap-2 w-[57px] h-[40px] text-sm"
+                    className="text-white border py-2 px-3 bg-defaultGreen border-[#FFFFFF] rounded-lg flex gap-2 w-[57px] h-[40px] text-sm"
                     disabled={isSubmitting}
                     onClick={() => setSubmitted(true)}
                   >
@@ -159,7 +159,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   <Field
                     type="text"
                     name="title"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-defaultGreen focus:border-defaultGreen block w-full p-2.5"
                   />
                   {submitted && (
                     <ErrorMessage
@@ -180,7 +180,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   <Field
                     as="textarea"
                     name="description"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5 h-[76px]"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-defaultGreen focus:border-defaultGreen block w-full p-2.5 h-[76px]"
                   />
                   {submitted && (
                     <ErrorMessage
@@ -202,13 +202,16 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                     <Field
                       as="select"
                       name="department"
-                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5 pr-10"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-defaultGreen focus:border-defaultGreen block w-full p-2.5 pr-10"
                       style={{
-                        appearance: 'none',
-                        WebkitAppearance: 'none',
-                        MozAppearance: 'none',
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
                       }}
                     >
+                      <option value="" disabled>
+                        Select Department
+                      </option>
                       {departmentOptions.map((option) => (
                         <option key={option.value} value={option.value}>
                           {option.name}
@@ -279,7 +282,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                                 onChange={() =>
                                   handleSubjectChange(subject.value)
                                 }
-                                style={{ accentColor: '#009540' }}
+                                style={{ accentColor: "#009540" }}
                                 className="mr-2"
                               />
                               {subject.name}
