@@ -13,6 +13,7 @@ import EYE_ICON from "@/app/assets/icons/eye.svg";
 import TableComponent from "@/app/components/Table";
 import NewDataSidebar from "@/app/components/NewDataSidebar";
 import FilterDataSidebar from "@/app/components/FilterDataSidebar";
+import { User } from "@/app/types/users";
 
 const Page = () => {
   const [isAddSidebarVisible, setIsAddSidebarVisible] =
@@ -23,22 +24,34 @@ const Page = () => {
     setIsAddSidebarVisible(!isAddSidebarVisible);
   };
 
+  const [userData, setUserData] = useState<User[]>([]);
+
+  const [filters, setFilters] = useState<{
+    department: string[];
+    dataSubjectTypes: string[];
+    titleSearch: string;
+  }>({
+    department: [],
+    dataSubjectTypes: [],
+    titleSearch: "",
+  });
+
   const toggleFilterSidebar = () => {
     setIsFilterSidebarVisible(!isFilterSidebarVisible);
   };
 
-  const getUserData = async () => {
+  const getUserData = async (filters: {
+    department: string[];
+    dataSubjectTypes: string[];
+    titleSearch: string;
+  }) => {
     try {
       const response = await fetch("/api/users", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({
-          title: "",
-          department: [],
-          dataSubjectTypes: [],
-        }),
+        body: JSON.stringify(filters),
       });
 
       if (!response.ok) {
@@ -46,16 +59,24 @@ const Page = () => {
       }
 
       const users = await response.json();
-
-      console.log(users);
+      setUserData(users);
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
   useEffect(() => {
-    getUserData();
-  }, []);
+    getUserData(filters);
+  }, [filters]);
+
+  const handleApplyFilters = (newFilters: {
+    department: string[];
+    dataSubjectTypes: string[];
+    titleSearch: string;
+  }) => {
+    setFilters(newFilters);
+    toggleFilterSidebar();
+  };
 
   return (
     <div className="bg-[#F5F5F5] p-6">
@@ -83,7 +104,7 @@ const Page = () => {
 
           <button
             onClick={toggleAddSidebar}
-            className="text-white font-medium py-2 px-4 border bg-[#009540] border-[#FFFFFF] rounded flex items-center gap-2"
+            className="text-white font-medium py-2 px-4 border bg-defaultGreen border-[#FFFFFF] rounded flex items-center gap-2"
           >
             <Image src={ADD_ICON} alt="ADD_ICON" width={16} height={16} />
             <p>New Data</p>
@@ -95,7 +116,7 @@ const Page = () => {
           <li className="me-1">
             <a
               href="#"
-              className="py-0.5 text-black border-b-2 font-semibold border-[#009540] rounded-t-lg active flex gap-2"
+              className="py-0.5 text-black border-b-2 font-semibold border-defaultGreen rounded-t-lg active flex gap-2"
               aria-current="page"
             >
               <Image src={DATA_ICON} alt="DATA_ICON" width={24} height={24} />
@@ -121,7 +142,7 @@ const Page = () => {
 
       <div className="flex flex-row justify-between my-4">
         <div className="flex flex-row gap-2">
-          <button className="text-[#009540] font-medium py-2 px-4 border-2 bg-white border-[#009540] rounded flex items-center gap-2">
+          <button className="text-defaultGreen font-medium py-2 px-4 border-2 bg-white border-defaultGreen rounded flex items-center gap-2">
             <Image src={EDIT_ICON} alt="EDIT_ICON" width={16} height={16} />
             Edit
           </button>
@@ -132,7 +153,7 @@ const Page = () => {
           </button>
         </div>
       </div>
-      <TableComponent />
+      <TableComponent userData={userData} />
       <NewDataSidebar
         isSidebarVisible={isAddSidebarVisible}
         toggleSidebar={toggleAddSidebar}
@@ -140,6 +161,7 @@ const Page = () => {
       <FilterDataSidebar
         isSidebarVisible={isFilterSidebarVisible}
         toggleSidebar={toggleFilterSidebar}
+        onApplyFilters={handleApplyFilters}
       />
     </div>
   );

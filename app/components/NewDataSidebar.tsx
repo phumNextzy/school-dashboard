@@ -1,10 +1,17 @@
 import React, { useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
-
+import Alert from "./Alert";
+import ARROW_DOWN from "@/app/assets/icons/arrow-down.svg";
+import Image from "next/image";
 
 interface SidebarProps {
   isSidebarVisible: boolean;
   toggleSidebar: () => void;
+}
+
+interface FilterOptions {
+  name: string;
+  value: string;
 }
 
 function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
@@ -12,6 +19,23 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
   const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
   const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const [alert, setAlert] = useState<{
+    text: string;
+    status: "success" | "error";
+  } | null>(null);
+
+  const departmentOptions: FilterOptions[] = [
+    { name: "Human Resources", value: "Human Resources" },
+    { name: "IT/IS", value: "IT/IS" },
+    { name: "Admission", value: "Admission" },
+    { name: "Marketing", value: "Marketing" },
+  ];
+
+  const dataSubjectOptions: FilterOptions[] = [
+    { name: "Employees", value: "Employees" },
+    { name: "Faculty Staff", value: "Faculty Staff" },
+    { name: "Students", value: "Students" },
+  ];
 
   const handleSubjectChange = (subject: string) => {
     setSelectedSubjects((prev) =>
@@ -35,14 +59,20 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
           dataSubjectTypes: selectedSubjects,
         }),
       });
-  
+
       if (!response.ok) {
         throw new Error("Network response was not ok");
       }
-  
+
       const result = await response.json();
-      console.log("Response from server:", result);
+      if (result) {
+        setAlert({ text: "Data submitted successfully!", status: "success" });
+      }
     } catch (error) {
+      setAlert({
+        text: "Error submitting data. Please try again.",
+        status: "error",
+      });
       console.error("Error submitting form:", error);
     }
   }
@@ -69,6 +99,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
           isSidebarVisible ? "translate-x-0" : "translate-x-full"
         }`}
       >
+        {alert && <Alert text={alert.text} status={alert.status} />}
         <Formik
           initialValues={{
             title: "",
@@ -83,7 +114,10 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
             setSelectedSubjects([]);
             setSubmitting(false);
             resetForm();
-            toggleSidebar();
+            setTimeout(() => {
+              toggleSidebar();
+              window.location.reload();
+            }, 1000);
           }}
         >
           {({ isSubmitting, resetForm }) => (
@@ -97,7 +131,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                     onClick={() => {
                       resetForm();
                       toggleSidebar();
-                      setSelectedSubjects([])
+                      setSelectedSubjects([]);
                     }}
                     className="my-auto text-sm cursor-pointer"
                   >
@@ -105,7 +139,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   </h4>
                   <button
                     type="submit"
-                    className="text-white border py-2 px-3 bg-[#009540] border-[#FFFFFF] rounded-lg flex gap-2 w-[57px] h-[40px] text-sm"
+                    className="text-white border py-2 px-3 bg-defaultGreen border-[#FFFFFF] rounded-lg flex gap-2 w-[57px] h-[40px] text-sm"
                     disabled={isSubmitting}
                     onClick={() => setSubmitted(true)}
                   >
@@ -125,7 +159,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   <Field
                     type="text"
                     name="title"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-defaultGreen focus:border-defaultGreen block w-full p-2.5"
                   />
                   {submitted && (
                     <ErrorMessage
@@ -146,7 +180,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   <Field
                     as="textarea"
                     name="description"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5 h-[76px]"
+                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-defaultGreen focus:border-defaultGreen block w-full p-2.5 h-[76px]"
                   />
                   {submitted && (
                     <ErrorMessage
@@ -164,17 +198,41 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                   >
                     Select a Department
                   </label>
-                  <Field
-                    as="select"
-                    name="department"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5"
-                  >
-                    <option value="">Choose a Department</option>
-                    <option value="US">United States</option>
-                    <option value="CA">Canada</option>
-                    <option value="FR">France</option>
-                    <option value="DE">Germany</option>
-                  </Field>
+                  <div className="relative">
+                    <Field
+                      as="select"
+                      name="department"
+                      className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-defaultGreen focus:border-defaultGreen block w-full p-2.5 pr-10"
+                      style={{
+                        appearance: "none",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
+                      }}
+                    >
+                      <option value="" disabled>
+                        Select Department
+                      </option>
+                      {departmentOptions.map((option) => (
+                        <option key={option.value} value={option.value}>
+                          {option.name}
+                        </option>
+                      ))}
+                    </Field>
+                    <Image
+                      src={ARROW_DOWN}
+                      alt="ARROW_DOWN"
+                      width={24}
+                      height={24}
+                      className="absolute right-2 top-1/2 transform -translate-y-1/2 pointer-events-none"
+                    />
+                    {submitted && (
+                      <ErrorMessage
+                        name="department"
+                        component="p"
+                        className="text-red-500 text-sm mt-1"
+                      />
+                    )}
+                  </div>
                   {submitted && (
                     <ErrorMessage
                       name="department"
@@ -194,11 +252,19 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                     <button
                       type="button"
                       onClick={() => setDropdownOpen((prev) => !prev)}
-                      className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-left"
+                      className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-left flex items-center justify-between"
                     >
-                      {selectedSubjects.length > 0
-                        ? selectedSubjects.join(", ")
-                        : "Select Subjects"}
+                      <span>
+                        {selectedSubjects.length > 0
+                          ? selectedSubjects.join(", ")
+                          : "Select Data Subject Type"}
+                      </span>
+                      <Image
+                        src={ARROW_DOWN}
+                        alt="ARROW_DOWN"
+                        width={24}
+                        height={24}
+                      />
                     </button>
                     {dropdownOpen && (
                       <div
@@ -206,15 +272,20 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                         className="absolute z-10 bg-white border border-gray-300 rounded-lg mt-1 w-full shadow-lg"
                       >
                         <div className="flex flex-col p-2">
-                          {["Subject1", "Subject2", "Subject3", "Subject4"].map((subject) => (
-                            <label key={subject} className="flex items-center">
+                          {dataSubjectOptions.map((subject, index) => (
+                            <label key={index} className="flex items-center">
                               <input
                                 type="checkbox"
-                                checked={selectedSubjects.includes(subject)}
-                                onChange={() => handleSubjectChange(subject)}
+                                checked={selectedSubjects.includes(
+                                  subject.value
+                                )}
+                                onChange={() =>
+                                  handleSubjectChange(subject.value)
+                                }
+                                style={{ accentColor: "#009540" }}
                                 className="mr-2"
                               />
-                              {subject}
+                              {subject.name}
                             </label>
                           ))}
                         </div>

@@ -6,6 +6,11 @@ import SEARCH_ICON from "@/app/assets/icons/search.svg";
 interface SidebarProps {
   isSidebarVisible: boolean;
   toggleSidebar: () => void;
+  onApplyFilters: (filters: {
+    department: string[];
+    dataSubjectTypes: string[];
+    titleSearch: string;
+  }) => void;
 }
 
 interface FilterOptions {
@@ -13,19 +18,49 @@ interface FilterOptions {
   value: string;
 }
 
-function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
-  const [departmentOptions, setDepartmentOptions] = useState<FilterOptions[]>([
+function FilterDataSidebar({
+  isSidebarVisible,
+  toggleSidebar,
+  onApplyFilters,
+}: SidebarProps) {
+  const [titleSearch, setTitleSearch] = useState<string>("");
+  const [selectedDepartments, setSelectedDepartments] = useState<string[]>([]);
+  const [selectedDataSubjects, setSelectedDataSubjects] = useState<string[]>(
+    []
+  );
+  const departmentOptions: FilterOptions[] = [
     { name: "Human Resources", value: "Human Resources" },
     { name: "IT/IS", value: "IT/IS" },
     { name: "Admission", value: "Admission" },
-    { name: "Marketing", value: "marketing" },
-  ]);
+    { name: "Marketing", value: "Marketing" },
+  ];
 
-  const [dataSubjectOptions, setDataSubjectOptions] = useState<FilterOptions[]>([
+  const dataSubjectOptions: FilterOptions[] = [
     { name: "Employees", value: "Employees" },
     { name: "Faculty Staff", value: "Faculty Staff" },
     { name: "Students", value: "Students" },
-  ]);
+  ];
+
+  const handleDepartmentChange = (value: string) => {
+    setSelectedDepartments((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  };
+
+  const handleDataSubjectChange = (value: string) => {
+    setSelectedDataSubjects((prev) =>
+      prev.includes(value) ? prev.filter((v) => v !== value) : [...prev, value]
+    );
+  };
+
+  const handleApplyFilters = () => {
+    onApplyFilters({
+      department: selectedDepartments,
+      dataSubjectTypes: selectedDataSubjects,
+      titleSearch,
+    });
+    toggleSidebar();
+  };
   return (
     <>
       <div
@@ -54,8 +89,8 @@ function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
               </h4>
               <button
                 type="button"
-                className="text-white border py-2 px-3 bg-[#009540] border-[#FFFFFF] rounded-lg flex gap-2 w-[101px] h-[40px] text-sm"
-                onClick={() => console.log("Save clicked")}
+                className="text-white border py-2 px-3 bg-defaultGreen border-[#FFFFFF] rounded-lg flex gap-2 w-[101px] h-[40px] text-sm"
+                onClick={handleApplyFilters}
               >
                 <p>Apply Filter</p>
               </button>
@@ -63,20 +98,27 @@ function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
           </div>
 
           <div className="border-b h-[48px] flex items-center">
-            <div className="px-6 flex flex-row gap-2 items-center">
+            <div className="px-6 flex flex-row items-center">
               <Image
                 src={SEARCH_ICON}
                 alt="SEARCH_ICON"
                 width={16}
                 height={16}
               />
-              <h4 className="my-auto">Search filter</h4>
             </div>
+            <input
+              type="text"
+              placeholder="Search filter"
+              className="flex-1 border-none outline-none h-full"
+              onChange={(e) => setTitleSearch(e.target.value)}
+            />
           </div>
 
           <div className="px-6">
             <div className="my-4">
-              <h4 className="text-[#8C8C8C] text-xs font-semibold">DEPARTMENT</h4>
+              <h4 className="text-[#8C8C8C] text-xs font-semibold">
+                DEPARTMENT
+              </h4>
               <div className="flex flex-col my-4">
                 {departmentOptions.map((option) => (
                   <div
@@ -87,11 +129,13 @@ function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                       id={option.value}
                       type="checkbox"
                       value={option.value}
-                      className="w-4 h-4 text-[#009540] bg-gray-100 border-[#FFFFFF] rounded focus:ring-[#009540] peer-checked:bg-[#009540] focus:ring-1 my-auto"
+                      onChange={() => handleDepartmentChange(option.value)}
+                      className="w-4 h-4 text-defaultGreen bg-gray-100 border-[#FFFFFF] rounded  my-auto"
+                      style={{ accentColor: "#009540" }}
                     />
                     <label
                       htmlFor={option.value}
-                      className="text-sm font-medium text-black mt-1"
+                      className="text-sm font-medium text-black"
                     >
                       {option.name}
                     </label>
@@ -100,7 +144,9 @@ function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
               </div>
             </div>
             <div className="my-4">
-              <h4 className="text-[#8C8C8C] text-xs font-semibold">DATA SUBJECT</h4>
+              <h4 className="text-[#8C8C8C] text-xs font-semibold">
+                DATA SUBJECT
+              </h4>
               <div className="flex flex-col my-4">
                 {dataSubjectOptions.map((option) => (
                   <div
@@ -111,11 +157,13 @@ function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                       id={option.value}
                       type="checkbox"
                       value={option.value}
-                      className="w-4 h-4 text-[#009540] bg-gray-100 border-[#FFFFFF] rounded focus:ring-[#009540] peer-checked:bg-[#009540] focus:ring-1 my-auto"
+                      onChange={() => handleDataSubjectChange(option.value)}
+                      className="w-4 h-4 text-defaultGreen bg-gray-100 border-[#FFFFFF] rounded  my-auto"
+                      style={{ accentColor: "#009540" }}
                     />
                     <label
                       htmlFor={option.value}
-                      className="text-sm font-medium text-black mt-1"
+                      className="text-sm font-medium text-black"
                     >
                       {option.name}
                     </label>
