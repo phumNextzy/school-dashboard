@@ -15,7 +15,6 @@ interface User {
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    console.log("body", body);
     const { titleSearch, department, dataSubjectTypes } = body;
 
     const data = fs.readFileSync(dbPath, "utf-8");
