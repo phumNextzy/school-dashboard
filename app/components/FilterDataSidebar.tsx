@@ -14,18 +14,18 @@ interface FilterOptions {
 }
 
 function FilterDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
-  const [departmentOptions, setDepartmentOptions] = useState<FilterOptions[]>([
+  const departmentOptions : FilterOptions[] = [
     { name: "Human Resources", value: "Human Resources" },
     { name: "IT/IS", value: "IT/IS" },
     { name: "Admission", value: "Admission" },
-    { name: "Marketing", value: "marketing" },
-  ]);
+    { name: "Marketing", value: "Marketing" },
+  ];
 
-  const [dataSubjectOptions, setDataSubjectOptions] = useState<FilterOptions[]>([
+  const dataSubjectOptions : FilterOptions[] = [
     { name: "Employees", value: "Employees" },
     { name: "Faculty Staff", value: "Faculty Staff" },
     { name: "Students", value: "Students" },
-  ]);
+  ];
   return (
     <>
       <div

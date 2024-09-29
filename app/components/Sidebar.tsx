@@ -54,7 +54,7 @@ function Sidebar() {
         <ul className="flex flex-row gap-2 xl:flex-col space-x-4 xl:space-x-0 xl:space-y-4">
           {menuData.map((item, index) => (
             <li key={index}>
-              <div className="flex flex-row items-center w-fit my-6 mx-4 xl:my-0 xl:mx-0">
+              <div className="flex flex-row items-center justify-center w-fit my-6 mx-4 xl:my-0 xl:mx-0">
                 <Image
                   src={item.icon}
                   alt={item.name}
@@ -68,7 +68,7 @@ function Sidebar() {
                       item.isActive ? "text-[#009540]" : "text-black"
                     }`}
                   >
-                    {item.name}
+                    <p className="pt-0.5">{item.name}</p>
                   </span>
                 </Link>
               </div>

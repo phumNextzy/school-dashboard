@@ -13,6 +13,7 @@ import EYE_ICON from "@/app/assets/icons/eye.svg";
 import TableComponent from "@/app/components/Table";
 import NewDataSidebar from "@/app/components/NewDataSidebar";
 import FilterDataSidebar from "@/app/components/FilterDataSidebar";
+import { User } from "@/app/types/users";
 
 const Page = () => {
   const [isAddSidebarVisible, setIsAddSidebarVisible] =
@@ -23,9 +24,13 @@ const Page = () => {
     setIsAddSidebarVisible(!isAddSidebarVisible);
   };
 
+  const [userData, setUserData] = useState<User[]>([]);
+
   const toggleFilterSidebar = () => {
     setIsFilterSidebarVisible(!isFilterSidebarVisible);
   };
+
+  
 
   const getUserData = async () => {
     try {
@@ -46,16 +51,20 @@ const Page = () => {
       }
 
       const users = await response.json();
-
-      console.log(users);
+      if (users && users.length > 0) {
+        setUserData(users)
+      }
     } catch (error) {
       console.error("Error:", error);
     }
   };
 
+  console.log(userData);
+
   useEffect(() => {
     getUserData();
   }, []);
+
 
   return (
     <div className="bg-[#F5F5F5] p-6">
@@ -132,7 +141,7 @@ const Page = () => {
           </button>
         </div>
       </div>
-      <TableComponent />
+      <TableComponent userData={userData} />
       <NewDataSidebar
         isSidebarVisible={isAddSidebarVisible}
         toggleSidebar={toggleAddSidebar}
