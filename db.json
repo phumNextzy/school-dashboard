@@ -1,0 +1,24 @@
+{
+  "users": [
+    {
+      "id": 1727624491065,
+      "title": "test title",
+      "department": "test department",
+      "description": "test description",
+      "dataSubjectTypes": [
+        "Subject1",
+        "Subject3"
+      ]
+    },
+    {
+      "id": 1727625991179,
+      "title": "title",
+      "description": "asdasd",
+      "department": "CA",
+      "dataSubjectTypes": [
+        "Subject1",
+        "Subject3"
+      ]
+    }
+  ]
+}
