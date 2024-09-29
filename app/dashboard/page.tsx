@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Breadcrumb from "@/app/components/Breadcrumb";
 import Image from "next/image";
 import ADD_ICON from "@/app/assets/icons/add.svg";
@@ -26,6 +26,37 @@ const Page = () => {
   const toggleFilterSidebar = () => {
     setIsFilterSidebarVisible(!isFilterSidebarVisible);
   };
+
+  const getUserData = async () => {
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: "",
+          department: [],
+          dataSubjectTypes: [],
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch users");
+      }
+
+      const users = await response.json();
+
+      console.log(users);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    getUserData();
+  }, []);
+
   return (
     <div className="bg-[#F5F5F5] p-6">
       <Breadcrumb currentPath="Current Path" />

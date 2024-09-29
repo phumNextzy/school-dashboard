@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Formik, Form, Field, ErrorMessage } from "formik";
 
 
@@ -9,6 +9,43 @@ interface SidebarProps {
 
 function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
   const [submitted, setSubmitted] = useState<boolean>(false);
+  const [selectedSubjects, setSelectedSubjects] = useState<string[]>([]);
+  const [dropdownOpen, setDropdownOpen] = useState<boolean>(false);
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleSubjectChange = (subject: string) => {
+    setSelectedSubjects((prev) =>
+      prev.includes(subject)
+        ? prev.filter((s) => s !== subject)
+        : [...prev, subject]
+    );
+  };
+
+  async function submitForm(values: any, selectedSubjects: string[]) {
+    try {
+      const response = await fetch("/api/users/create", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: values.title,
+          description: values.description,
+          department: values.department,
+          dataSubjectTypes: selectedSubjects,
+        }),
+      });
+  
+      if (!response.ok) {
+        throw new Error("Network response was not ok");
+      }
+  
+      const result = await response.json();
+      console.log("Response from server:", result);
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
+  }
 
   const validate = (values: {
     title: string;
@@ -18,9 +55,6 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
     const errors: any = {};
     if (!values.title) {
       errors.title = "Title is required";
-    }
-    if (!values.description) {
-      errors.description = "Description is required";
     }
     if (!values.department) {
       errors.department = "Department is required";
@@ -43,9 +77,10 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
             dataSubject: "",
           }}
           validate={validate}
-          onSubmit={(values, { setSubmitting, resetForm }) => {
+          onSubmit={async (values, { setSubmitting, resetForm }) => {
             setSubmitted(false);
-            console.log("Form Submitted:", values);
+            await submitForm(values, selectedSubjects);
+            setSelectedSubjects([]);
             setSubmitting(false);
             resetForm();
             toggleSidebar();
@@ -62,6 +97,7 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                     onClick={() => {
                       resetForm();
                       toggleSidebar();
+                      setSelectedSubjects([])
                     }}
                     className="my-auto text-sm cursor-pointer"
                   >
@@ -147,25 +183,44 @@ function NewDataSidebar({ isSidebarVisible, toggleSidebar }: SidebarProps) {
                     />
                   )}
                 </div>
-
-                <div className="my-6">
+                <div className="my-4">
                   <label
                     htmlFor="data_subject"
                     className="block mb-2 text-sm font-medium text-gray-900"
                   >
-                    Select a Data Subject (Optional)
+                    Select Data Subjects (Optional)
                   </label>
-                  <Field
-                    as="select"
-                    name="dataSubject"
-                    className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:outline-none focus:ring-1 focus:ring-[#009540] focus:border-[#009540] block w-full p-2.5"
-                  >
-                    <option value="">Choose a Data Subject</option>
-                    <option value="Subject1">Subject 1</option>
-                    <option value="Subject2">Subject 2</option>
-                    <option value="Subject3">Subject 3</option>
-                    <option value="Subject4">Subject 4</option>
-                  </Field>
+                  <div className="relative">
+                    <button
+                      type="button"
+                      onClick={() => setDropdownOpen((prev) => !prev)}
+                      className="w-full bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg p-2.5 text-left"
+                    >
+                      {selectedSubjects.length > 0
+                        ? selectedSubjects.join(", ")
+                        : "Select Subjects"}
+                    </button>
+                    {dropdownOpen && (
+                      <div
+                        ref={dropdownRef}
+                        className="absolute z-10 bg-white border border-gray-300 rounded-lg mt-1 w-full shadow-lg"
+                      >
+                        <div className="flex flex-col p-2">
+                          {["Subject1", "Subject2", "Subject3", "Subject4"].map((subject) => (
+                            <label key={subject} className="flex items-center">
+                              <input
+                                type="checkbox"
+                                checked={selectedSubjects.includes(subject)}
+                                onChange={() => handleSubjectChange(subject)}
+                                className="mr-2"
+                              />
+                              {subject}
+                            </label>
+                          ))}
+                        </div>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </div>
             </Form>
